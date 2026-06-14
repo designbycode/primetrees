@@ -10,6 +10,7 @@ class ListTreeCategories extends ListRecords
 {
     protected static string $resource = TreeCategoryResource::class;
 
+
     protected function getHeaderActions(): array
     {
         return [

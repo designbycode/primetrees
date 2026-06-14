@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -15,9 +16,15 @@ class TreesTable
     {
         return $table
             ->columns([
-                TextColumn::make('tree_category_id')
-                    ->numeric()
-                    ->sortable(),
+                SpatieMediaLibraryImageColumn::make('images')
+                    ->collection('images')
+                    ->stacked()
+                    ->limit(3)
+                    ->circular(),
+                TextColumn::make('category.name')
+                    ->label('Category')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('common_name')
                     ->searchable(),
                 TextColumn::make('botanical_name')

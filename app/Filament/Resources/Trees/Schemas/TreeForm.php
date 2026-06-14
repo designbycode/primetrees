@@ -3,10 +3,13 @@
 namespace App\Filament\Resources\Trees\Schemas;
 
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Str;
 
 class TreeForm
 {
@@ -14,17 +17,28 @@ class TreeForm
     {
         return $schema
             ->components([
-                TextInput::make('tree_category_id')
+                Select::make('tree_category_id')
+                    ->relationship('category', 'name')
                     ->required()
-                    ->numeric(),
+                    ->searchable()
+                    ->preload(),
                 TextInput::make('common_name')
-                    ->required(),
+                    ->required()
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                 TextInput::make('botanical_name'),
                 TextInput::make('slug')
                     ->required(),
                 Textarea::make('short_description')
                     ->columnSpanFull(),
                 Textarea::make('description')
+                    ->columnSpanFull(),
+                SpatieMediaLibraryFileUpload::make('images')
+                    ->collection('images')
+                    ->multiple()
+                    ->reorderable()
+                    ->appendFiles()
+                    ->panelLayout('grid')
                     ->columnSpanFull(),
                 TextInput::make('mature_height'),
                 TextInput::make('mature_width'),
