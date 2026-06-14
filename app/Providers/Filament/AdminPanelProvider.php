@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use AdriaanZon\FilamentPasskeys\FilamentPasskeysPlugin;
+use AdriaanZon\FilamentPasskeys\PasskeyAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,7 +29,15 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->profile()
             ->login()
+            ->plugins([
+                FilamentPasskeysPlugin::make()->passwordlessLogin(),
+            ])
+            ->multiFactorAuthentication([
+                PasskeyAuthentication::make()->managementOnly(),
+
+            ])
             ->colors([
                 'primary' => Color::Amber,
             ])

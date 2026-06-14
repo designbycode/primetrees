@@ -75,9 +75,53 @@ logout.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: logout.url(options),
     method: 'post',
 })
+
+/**
+* @see \Filament\Auth\Pages\EditProfile::__invoke
+ * @see vendor/filament/filament/src/Auth/Pages/EditProfile.php:7
+ * @route '/admin/profile'
+ */
+export const profile = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: profile.url(options),
+    method: 'get',
+})
+
+profile.definition = {
+    methods: ["get","head"],
+    url: '/admin/profile',
+} satisfies RouteDefinition<["get","head"]>
+
+/**
+* @see \Filament\Auth\Pages\EditProfile::__invoke
+ * @see vendor/filament/filament/src/Auth/Pages/EditProfile.php:7
+ * @route '/admin/profile'
+ */
+profile.url = (options?: RouteQueryOptions) => {
+    return profile.definition.url + queryParams(options)
+}
+
+/**
+* @see \Filament\Auth\Pages\EditProfile::__invoke
+ * @see vendor/filament/filament/src/Auth/Pages/EditProfile.php:7
+ * @route '/admin/profile'
+ */
+profile.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: profile.url(options),
+    method: 'get',
+})
+/**
+* @see \Filament\Auth\Pages\EditProfile::__invoke
+ * @see vendor/filament/filament/src/Auth/Pages/EditProfile.php:7
+ * @route '/admin/profile'
+ */
+profile.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: profile.url(options),
+    method: 'head',
+})
 const auth = {
     login: Object.assign(login, login),
 logout: Object.assign(logout, logout),
+profile: Object.assign(profile, profile),
 }
 
 export default auth
