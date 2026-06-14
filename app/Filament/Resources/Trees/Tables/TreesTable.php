@@ -25,6 +25,10 @@ class TreesTable
                     ->label('Category')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('species.name')
+                    ->label('Species')
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('common_name')
                     ->searchable(),
                 TextColumn::make('botanical_name')

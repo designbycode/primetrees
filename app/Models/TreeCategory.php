@@ -21,6 +21,42 @@ class TreeCategory extends Model implements HasMedia
         'is_active' => 'boolean',
     ];
 
+    protected $appends = ['image_urls'];
+
+
+    /**
+     * @param $query
+     * @return mixed
+     */
+    public function scopeIsActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+
+    public function getImageUrlsAttribute(): array
+    {
+        $media = $this->getMedia('images');
+
+        if ($media->isEmpty()) {
+            return [
+                [
+                    'original' => $this->getFirstMediaUrl('images'),
+                    'thumb' => $this->getFirstMediaUrl('images', 'thumb'),
+                    'card' => $this->getFirstMediaUrl('images', 'card'),
+                    'large' => $this->getFirstMediaUrl('images', 'large'),
+                ],
+            ];
+        }
+
+        return $media->map(fn ($mediaItem) => [
+            'original' => $mediaItem->getUrl(),
+            'thumb' => $mediaItem->getUrl('thumb'),
+            'card' => $mediaItem->getUrl('card'),
+            'large' => $mediaItem->getUrl('large'),
+        ])->toArray();
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('images')

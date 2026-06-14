@@ -18,6 +18,8 @@ class TreeCategoryResource extends Resource
 {
     protected static ?string $model = TreeCategory::class;
 
+    protected static \UnitEnum|string|null $navigationGroup = 'Tree Management';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'name';

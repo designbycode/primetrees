@@ -22,6 +22,10 @@ class TreeForm
                     ->required()
                     ->searchable()
                     ->preload(),
+                Select::make('species_id')
+                    ->relationship('species', 'name')
+                    ->searchable()
+                    ->preload(),
                 TextInput::make('common_name')
                     ->required()
                     ->live(onBlur: true)

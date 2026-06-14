@@ -1,36 +1,24 @@
 <?php
 
-namespace App\Filament\Resources\TreeCategories\Tables;
+namespace App\Filament\Resources\Species\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class TreeCategoriesTable
+class SpeciesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                SpatieMediaLibraryImageColumn::make('images')
-                    ->collection('images')
-                    ->stacked()
-                    ->limit(3)
-                    ->circular(),
                 TextColumn::make('name')
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('slug')
-                    ->searchable(),
-                IconColumn::make('is_active')
-                    ->boolean(),
-                TextColumn::make('sort_order')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('meta_title')
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -41,8 +29,6 @@ class TreeCategoriesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->defaultSort('sort_order')
-            ->reorderable('sort_order')
             ->filters([
                 //
             ])

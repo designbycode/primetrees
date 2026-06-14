@@ -1,15 +1,15 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\HomePageIndexController::__invoke
  * @see app/Http/Controllers/HomePageIndexController.php:14
  * @route '/'
  */
-export const home = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: home.url(options),
+const HomePageIndexController = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: HomePageIndexController.url(options),
     method: 'get',
 })
 
-home.definition = {
+HomePageIndexController.definition = {
     methods: ["get","head"],
     url: '/',
 } satisfies RouteDefinition<["get","head"]>
@@ -19,8 +19,8 @@ home.definition = {
  * @see app/Http/Controllers/HomePageIndexController.php:14
  * @route '/'
  */
-home.url = (options?: RouteQueryOptions) => {
-    return home.definition.url + queryParams(options)
+HomePageIndexController.url = (options?: RouteQueryOptions) => {
+    return HomePageIndexController.definition.url + queryParams(options)
 }
 
 /**
@@ -28,8 +28,8 @@ home.url = (options?: RouteQueryOptions) => {
  * @see app/Http/Controllers/HomePageIndexController.php:14
  * @route '/'
  */
-home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: home.url(options),
+HomePageIndexController.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
+    url: HomePageIndexController.url(options),
     method: 'get',
 })
 /**
@@ -37,7 +37,8 @@ home.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
  * @see app/Http/Controllers/HomePageIndexController.php:14
  * @route '/'
  */
-home.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: home.url(options),
+HomePageIndexController.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
+    url: HomePageIndexController.url(options),
     method: 'head',
 })
+export default HomePageIndexController

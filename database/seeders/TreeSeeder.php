@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Species;
 use App\Models\Tree;
 use App\Models\TreeCategory;
 use Illuminate\Database\Seeder;
@@ -45,11 +46,25 @@ class TreeSeeder extends Seeder
             ],
         ];
 
+        $botanicalToSpeciesMap = [
+            'Olea europaea subsp. africana' => 'olea-europaea-subsp-africana',
+            'Syzygium guineense' => 'syzygium-guineense',
+            'Trichilia emetica' => 'trichillia-emetica',
+            'Afrocarpus falcatus' => 'afrocarpus-falcatus',
+        ];
+
         foreach ($trees as $tree) {
+            $speciesId = null;
+            $botanical = $tree['botanical_name'];
+            if (isset($botanicalToSpeciesMap[$botanical])) {
+                $speciesId = Species::where('slug', $botanicalToSpeciesMap[$botanical])->first()?->id;
+            }
+
             Tree::updateOrCreate(
                 ['slug' => Str::slug($tree['common_name'])],
                 [
                     'tree_category_id' => $indigenous->id,
+                    'species_id' => $speciesId,
                     'common_name' => $tree['common_name'],
                     'botanical_name' => $tree['botanical_name'],
                     'slug' => Str::slug($tree['common_name']),
