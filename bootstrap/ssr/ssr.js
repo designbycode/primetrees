@@ -1,8 +1,8 @@
-import { Head, Link, createInertiaApp } from "@inertiajs/react";
+import { Head, Link, createInertiaApp, usePage } from "@inertiajs/react";
 import createServer from "@inertiajs/react/server";
 import { renderToString } from "react-dom/server";
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { BookOpen, CircleCheckIcon, Home, InfoIcon, LayoutDashboard, Loader2Icon, MapPin, Menu, Monitor, Moon, OctagonXIcon, Phone, Sun, TreeDeciduous, Trees, TriangleAlertIcon, X } from "lucide-react";
+import React, { Suspense, useEffect, useState, useSyncExternalStore } from "react";
+import { CircleCheckIcon, Home, InfoIcon, LayoutDashboard, List, Loader2Icon, MapPin, Menu, Monitor, Moon, OctagonXIcon, Phone, Sun, TreeDeciduous, Trees, TriangleAlertIcon, X } from "lucide-react";
 import { cva } from "class-variance-authority";
 import { Slot, Tooltip } from "radix-ui";
 import { clsx } from "clsx";
@@ -21,6 +21,7 @@ async function resolvePageComponent(path, pages) {
 }
 //#endregion
 //#region resources/js/wayfinder/index.ts
+var urlDefaults = () => ({});
 var getValue = (value) => {
 	if (value === true) return "1";
 	if (value === false) return "0";
@@ -64,11 +65,17 @@ var queryParams = (options) => {
 	const str = params.toString();
 	return str.length > 0 ? `?${str}` : "";
 };
+var applyUrlDefaults = (existing) => {
+	const existingParams = { ...existing ?? {} };
+	const defaultParams = urlDefaults();
+	for (const key in defaultParams) if (existingParams[key] === void 0 && defaultParams[key] !== void 0) existingParams[key] = defaultParams[key];
+	return existingParams;
+};
 //#endregion
 //#region resources/js/routes/index.ts
 /**
 * @see \App\Http\Controllers\HomePageIndexController::__invoke
-* @see app/Http/Controllers/HomePageIndexController.php:14
+* @see app/Http/Controllers/HomePageIndexController.php:13
 * @route '/'
 */
 var home = (options) => ({
@@ -81,7 +88,7 @@ home.definition = {
 };
 /**
 * @see \App\Http\Controllers\HomePageIndexController::__invoke
-* @see app/Http/Controllers/HomePageIndexController.php:14
+* @see app/Http/Controllers/HomePageIndexController.php:13
 * @route '/'
 */
 home.url = (options) => {
@@ -89,7 +96,7 @@ home.url = (options) => {
 };
 /**
 * @see \App\Http\Controllers\HomePageIndexController::__invoke
-* @see app/Http/Controllers/HomePageIndexController.php:14
+* @see app/Http/Controllers/HomePageIndexController.php:13
 * @route '/'
 */
 home.get = (options) => ({
@@ -98,17 +105,139 @@ home.get = (options) => ({
 });
 /**
 * @see \App\Http\Controllers\HomePageIndexController::__invoke
-* @see app/Http/Controllers/HomePageIndexController.php:14
+* @see app/Http/Controllers/HomePageIndexController.php:13
 * @route '/'
 */
 home.head = (options) => ({
 	url: home.url(options),
 	method: "head"
 });
+/**
+* @see \App\Http\Controllers\TreesPageIndexController::__invoke
+* @see app/Http/Controllers/TreesPageIndexController.php:13
+* @route '/trees'
+*/
+var trees = (options) => ({
+	url: trees.url(options),
+	method: "get"
+});
+trees.definition = {
+	methods: ["get", "head"],
+	url: "/trees"
+};
+/**
+* @see \App\Http\Controllers\TreesPageIndexController::__invoke
+* @see app/Http/Controllers/TreesPageIndexController.php:13
+* @route '/trees'
+*/
+trees.url = (options) => {
+	return trees.definition.url + queryParams(options);
+};
+/**
+* @see \App\Http\Controllers\TreesPageIndexController::__invoke
+* @see app/Http/Controllers/TreesPageIndexController.php:13
+* @route '/trees'
+*/
+trees.get = (options) => ({
+	url: trees.url(options),
+	method: "get"
+});
+/**
+* @see \App\Http\Controllers\TreesPageIndexController::__invoke
+* @see app/Http/Controllers/TreesPageIndexController.php:13
+* @route '/trees'
+*/
+trees.head = (options) => ({
+	url: trees.url(options),
+	method: "head"
+});
+/**
+* @see \App\Http\Controllers\VisitPageIndexController::__invoke
+* @see app/Http/Controllers/VisitPageIndexController.php:13
+* @route '/visit'
+*/
+var visit = (options) => ({
+	url: visit.url(options),
+	method: "get"
+});
+visit.definition = {
+	methods: ["get", "head"],
+	url: "/visit"
+};
+/**
+* @see \App\Http\Controllers\VisitPageIndexController::__invoke
+* @see app/Http/Controllers/VisitPageIndexController.php:13
+* @route '/visit'
+*/
+visit.url = (options) => {
+	return visit.definition.url + queryParams(options);
+};
+/**
+* @see \App\Http\Controllers\VisitPageIndexController::__invoke
+* @see app/Http/Controllers/VisitPageIndexController.php:13
+* @route '/visit'
+*/
+visit.get = (options) => ({
+	url: visit.url(options),
+	method: "get"
+});
+/**
+* @see \App\Http\Controllers\VisitPageIndexController::__invoke
+* @see app/Http/Controllers/VisitPageIndexController.php:13
+* @route '/visit'
+*/
+visit.head = (options) => ({
+	url: visit.url(options),
+	method: "head"
+});
+/**
+* @see \App\Http\Controllers\AvailabilityIndexController::__invoke
+* @see app/Http/Controllers/AvailabilityIndexController.php:14
+* @route '/availability-list'
+*/
+var availabilityList = (options) => ({
+	url: availabilityList.url(options),
+	method: "get"
+});
+availabilityList.definition = {
+	methods: ["get", "head"],
+	url: "/availability-list"
+};
+/**
+* @see \App\Http\Controllers\AvailabilityIndexController::__invoke
+* @see app/Http/Controllers/AvailabilityIndexController.php:14
+* @route '/availability-list'
+*/
+availabilityList.url = (options) => {
+	return availabilityList.definition.url + queryParams(options);
+};
+/**
+* @see \App\Http\Controllers\AvailabilityIndexController::__invoke
+* @see app/Http/Controllers/AvailabilityIndexController.php:14
+* @route '/availability-list'
+*/
+availabilityList.get = (options) => ({
+	url: availabilityList.url(options),
+	method: "get"
+});
+/**
+* @see \App\Http\Controllers\AvailabilityIndexController::__invoke
+* @see app/Http/Controllers/AvailabilityIndexController.php:14
+* @route '/availability-list'
+*/
+availabilityList.head = (options) => ({
+	url: availabilityList.url(options),
+	method: "head"
+});
 //#endregion
 //#region resources/js/lib/utils.ts
 function cn(...inputs) {
 	return twMerge(clsx(inputs));
+}
+function toUrl(href) {
+	if (typeof href === "string") return href;
+	if (href && typeof href.toString === "function") return href.toString();
+	return String(href);
 }
 //#endregion
 //#region resources/js/components/ui/button.tsx
@@ -233,6 +362,35 @@ function ThemeToggle() {
 	});
 }
 //#endregion
+//#region resources/js/hooks/use-current-url.ts
+function useCurrentUrl() {
+	const page = usePage();
+	const currentUrlPath = new URL(page.url, typeof window !== "undefined" ? window.location.origin : "http://localhost").pathname;
+	const isCurrentUrl = (urlToCheck, currentUrl, startsWith = false) => {
+		const urlToCompare = currentUrl ?? currentUrlPath;
+		const urlString = toUrl(urlToCheck);
+		const comparePath = (path) => startsWith ? urlToCompare.startsWith(path) : path === urlToCompare;
+		if (!urlString.startsWith("http")) return comparePath(urlString);
+		try {
+			return comparePath(new URL(urlString).pathname);
+		} catch {
+			return false;
+		}
+	};
+	const isCurrentOrParentUrl = (urlToCheck, currentUrl) => {
+		return isCurrentUrl(urlToCheck, currentUrl, true);
+	};
+	const whenCurrentUrl = (urlToCheck, ifTrue, ifFalse = null) => {
+		return isCurrentUrl(urlToCheck) ? ifTrue : ifFalse;
+	};
+	return {
+		currentUrl: currentUrlPath,
+		isCurrentUrl,
+		isCurrentOrParentUrl,
+		whenCurrentUrl
+	};
+}
+//#endregion
 //#region resources/js/layouts/app/app-navigation.tsx
 var links = [
 	{
@@ -243,39 +401,28 @@ var links = [
 	},
 	{
 		id: "trees",
-		label: "Trees",
+		label: "Trees Directory",
 		icon: Trees,
-		href: home.url()
+		href: trees.url()
 	},
 	{
 		id: "availability-list",
 		label: "Availability List",
-		icon: BookOpen,
-		href: "#planner"
+		icon: List,
+		href: availabilityList.url()
 	},
 	{
 		id: "contact-us",
-		label: "Contact Us",
+		label: "Contact & Visit",
 		icon: Phone,
-		href: "#chronicles"
+		href: visit.url()
 	}
 ];
 function AppNavigation() {
-	const [active, setActive] = useState("explorer");
+	const { isCurrentUrl, isCurrentOrParentUrl } = useCurrentUrl();
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-	useEffect(() => {
-		if (typeof window !== "undefined") {
-			const handleHashChange = () => {
-				const hash = window.location.hash.replace("#", "");
-				if (links.some((l) => l.id === hash)) setActive(hash);
-			};
-			handleHashChange();
-			window.addEventListener("hashchange", handleHashChange);
-			return () => window.removeEventListener("hashchange", handleHashChange);
-		}
-	}, []);
 	return /* @__PURE__ */ jsxs("div", {
-		className: "border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300",
+		className: "border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300 print:hidden",
 		children: [/* @__PURE__ */ jsxs(Wrapper, {
 			as: `header`,
 			className: " py-2.5 flex flex-col md:flex-row items-center justify-between gap-4",
@@ -307,12 +454,11 @@ function AppNavigation() {
 					"aria-label": "Primary",
 					className: "hidden items-center gap-1 rounded-full border border-border/60    bg-card px-2 py-2  md:flex",
 					children: links.map(({ id, label, icon: Icon, href }) => {
-						const isActive = active === id;
+						const isActive = href === home.url() ? isCurrentUrl(href) : isCurrentOrParentUrl(href);
 						return /* @__PURE__ */ jsxs(Link, {
 							prefetch: true,
 							href,
 							"aria-current": isActive ? "page" : void 0,
-							onClick: () => setActive(id),
 							className: `flex items-center gap-2 rounded-full px-4 py-2 font-mono text-xs font-bold uppercase tracking-wide transition-all ${isActive ? "bg-primary text-primary-foreground" : "text-foreground/60 hover:bg-muted hover:text-foreground"}`,
 							children: [/* @__PURE__ */ jsx(Icon, { className: "h-4 w-4" }), label]
 						}, id);
@@ -329,13 +475,13 @@ function AppNavigation() {
 				className: "px-4 py-4 space-y-3 flex flex-col",
 				children: [
 					links.map(({ id, label, icon: Icon, href }) => {
-						return /* @__PURE__ */ jsxs("a", {
+						return /* @__PURE__ */ jsxs(Link, {
+							prefetch: true,
 							href,
 							onClick: () => {
-								setActive(id);
 								setIsMobileMenuOpen(false);
 							},
-							className: `flex items-center gap-2 rounded-lg px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wide transition-colors ${active === id ? "bg-primary/10 text-primary" : "text-foreground/60 hover:bg-muted hover:text-foreground"}`,
+							className: `flex items-center gap-2 rounded-lg px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wide transition-colors ${(href === home.url() ? isCurrentUrl(href) : isCurrentOrParentUrl(href)) ? "bg-primary/10 text-primary" : "text-foreground/60 hover:bg-muted hover:text-foreground"}`,
 							children: [/* @__PURE__ */ jsx(Icon, { className: "h-4 w-4" }), label]
 						}, id);
 					}),
@@ -383,12 +529,16 @@ function AppFooter() {
 				})]
 			}), /* @__PURE__ */ jsxs("div", {
 				className: " font-mono ",
-				children: ["Designed and developed by ", /* @__PURE__ */ jsx("a", {
-					className: `text-primary hover:underline hover:decoration-primary`,
-					href: "https://designbycode.co.za",
-					target: `_blank`,
-					children: "designbycode"
-				})]
+				children: [
+					"Designed and developed by",
+					" ",
+					/* @__PURE__ */ jsx("a", {
+						className: `text-primary hover:underline hover:decoration-primary`,
+						href: "https://designbycode.co.za",
+						target: `_blank`,
+						children: "designbycode"
+					})
+				]
 			})]
 		})
 	});
@@ -398,16 +548,21 @@ AppFooter.displayName = "AppFooter";
 //#region resources/js/layouts/app/app-notification-bar.tsx
 function AppNotificationBar() {
 	return /* @__PURE__ */ jsx(Fragment, { children: /* @__PURE__ */ jsxs("div", {
-		className: "bg-primary text-primary-foreground border-b border-primary-foreground/10 text-[10px] sm:text-xs font-mono py-2.5 px-4 text-center flex items-center justify-center gap-1.5 uppercase tracking-widest leading-none",
+		className: "bg-primary text-primary-foreground border-b border-primary-foreground/10 text-[10px] sm:text-xs font-mono py-2.5 px-4 text-center flex items-center justify-center gap-1.5 uppercase tracking-widest leading-none print:hidden",
 		children: [/* @__PURE__ */ jsx(MapPin, { className: "w-3.5 h-3.5 animate-pulse stroke-1" }), /* @__PURE__ */ jsx("span", { children: "Mistico Equestrian Centre, R312, Suid-Agter-Paarl Rd, Paarl, 7630" })]
 	}) });
 }
 AppNotificationBar.displayName = "AppNotificationBar";
 //#endregion
 //#region resources/js/layouts/app-layout.tsx
+var MapSection = React.lazy(() => import("./assets/map-section-CR4sUvx9.js"));
 function AppLayout({ children, title }) {
+	const [isMounted, setIsMounted] = useState(false);
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: title ? `${title} - PrimeTrees` : "PrimeTrees - Premium Forestry & Tree Care" }), /* @__PURE__ */ jsxs("div", {
-		className: "min-h-screen bg-background text-foreground font-sans selection:bg-primary/50 selection:text-white",
+		className: "min-h-screen bg-background text-foreground font-sans selection:bg-primary/50 selection:text-white flex flex-col",
 		children: [
 			/* @__PURE__ */ jsx(AppNotificationBar, {}),
 			/* @__PURE__ */ jsx(AppNavigation, {}),
@@ -415,7 +570,23 @@ function AppLayout({ children, title }) {
 				className: "flex-1 w-full",
 				children
 			}),
-			/* @__PURE__ */ jsx(AppFooter, {})
+			isMounted && /* @__PURE__ */ jsx("div", {
+				className: "print:hidden",
+				children: /* @__PURE__ */ jsx(Suspense, {
+					fallback: /* @__PURE__ */ jsx("div", {
+						className: "w-full bg-muted/10 py-16 px-6 border-t border-border animate-pulse",
+						children: /* @__PURE__ */ jsxs("div", {
+							className: "mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8",
+							children: [/* @__PURE__ */ jsx("div", { className: "lg:col-span-5 h-[400px] bg-muted rounded-2xl" }), /* @__PURE__ */ jsx("div", { className: "lg:col-span-7 h-[400px] bg-muted rounded-2xl" })]
+						})
+					}),
+					children: /* @__PURE__ */ jsx(MapSection, {})
+				})
+			}),
+			/* @__PURE__ */ jsx("div", {
+				className: "print:hidden",
+				children: /* @__PURE__ */ jsx(AppFooter, {})
+			})
 		]
 	})] });
 }
@@ -460,9 +631,11 @@ createServer((page) => createInertiaApp({
 	render: renderToString,
 	title: (title) => title ? `${title} - ${appName}` : appName,
 	resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, /* #__PURE__ */ Object.assign({
-		"./pages/availability-list.tsx": () => import("./assets/availability-list-DFFGpfGp.js"),
-		"./pages/home.tsx": () => import("./assets/home-Ckpwcz3u.js"),
-		"./pages/welcome.tsx": () => import("./assets/welcome-CHS6CKce.js")
+		"./pages/availability-list.tsx": () => import("./assets/availability-list-DyYLHSNi.js"),
+		"./pages/home.tsx": () => import("./assets/home-DUG5YOrN.js"),
+		"./pages/trees/index.tsx": () => import("./assets/trees-CyQeEBLg.js"),
+		"./pages/trees/show.tsx": () => import("./assets/show-DCdeptD0.js"),
+		"./pages/visit.tsx": () => import("./assets/visit-DLgUhJ0-.js")
 	})),
 	setup: ({ App, props }) => /* @__PURE__ */ jsx(App, { ...props }),
 	layout: (name) => {
@@ -480,4 +653,4 @@ createServer((page) => createInertiaApp({
 	}
 }));
 //#endregion
-export { cn as i, Wrapper as n, Button as r, AppLayout as t };
+export { trees as a, queryParams as c, cn as i, Wrapper as n, visit as o, Button as r, applyUrlDefaults as s, AppLayout as t };

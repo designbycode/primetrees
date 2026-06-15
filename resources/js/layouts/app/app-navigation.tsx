@@ -1,56 +1,43 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
-    BookOpen,
     Home,
     LayoutDashboard,
+    List,
     Menu,
     Phone,
     Trees,
     X,
 } from "lucide-react";
 import { Link } from "@inertiajs/react";
-import { home } from "@/routes";
+import { availabilityList, home, trees, visit } from "@/routes";
 import { Button } from "@/components/ui/button";
 import Wrapper from "@/components/app/wrapper.tsx";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useCurrentUrl } from "@/hooks/use-current-url";
 
 const links = [
     { id: "home", label: "Home", icon: Home, href: home.url() },
-    { id: "trees", label: "Trees", icon: Trees, href: home.url() },
+    { id: "trees", label: "Trees Directory", icon: Trees, href: trees.url() },
     {
         id: "availability-list",
         label: "Availability List",
-        icon: BookOpen,
-        href: "#planner",
+        icon: List,
+        href: availabilityList.url(),
     },
-    // { id: "lab", label: "Lab", icon: LineChart, href: "#lab" },
-    { id: "contact-us", label: "Contact Us", icon: Phone, href: "#chronicles" },
+    {
+        id: "contact-us",
+        label: "Contact & Visit",
+        icon: Phone,
+        href: visit.url(),
+    },
 ];
 
 export default function AppNavigation() {
-    const [active, setActive] = useState("explorer");
+    const { isCurrentUrl, isCurrentOrParentUrl } = useCurrentUrl();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            const handleHashChange = () => {
-                const hash = window.location.hash.replace("#", "");
-                if (links.some((l) => l.id === hash)) {
-                    setActive(hash);
-                }
-            };
-
-            // Set initial state
-            handleHashChange();
-
-            window.addEventListener("hashchange", handleHashChange);
-            return () =>
-                window.removeEventListener("hashchange", handleHashChange);
-        }
-    }, []);
-
     return (
-        <div className="border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300">
+        <div className="border-b border-border bg-background/90 backdrop-blur-md sticky top-0 z-40 transition-colors duration-300 print:hidden">
             <Wrapper
                 as={`header`}
                 className=" py-2.5 flex flex-col md:flex-row items-center justify-between gap-4"
@@ -96,14 +83,16 @@ export default function AppNavigation() {
                     className="hidden items-center gap-1 rounded-full border border-border/60    bg-card px-2 py-2  md:flex"
                 >
                     {links.map(({ id, label, icon: Icon, href }) => {
-                        const isActive = active === id;
+                        const isActive =
+                            href === home.url()
+                                ? isCurrentUrl(href)
+                                : isCurrentOrParentUrl(href);
                         return (
                             <Link
                                 prefetch={true}
                                 key={id}
                                 href={href}
                                 aria-current={isActive ? "page" : undefined}
-                                onClick={() => setActive(id)}
                                 className={`flex items-center gap-2 rounded-full px-4 py-2 font-mono text-xs font-bold uppercase tracking-wide transition-all ${
                                     isActive
                                         ? "bg-primary text-primary-foreground"
@@ -128,13 +117,16 @@ export default function AppNavigation() {
                 <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-lg animate-in slide-in-from-top duration-300">
                     <div className="px-4 py-4 space-y-3 flex flex-col">
                         {links.map(({ id, label, icon: Icon, href }) => {
-                            const isActive = active === id;
+                            const isActive =
+                                href === home.url()
+                                    ? isCurrentUrl(href)
+                                    : isCurrentOrParentUrl(href);
                             return (
-                                <a
+                                <Link
+                                    prefetch={true}
                                     key={id}
                                     href={href}
                                     onClick={() => {
-                                        setActive(id);
                                         setIsMobileMenuOpen(false);
                                     }}
                                     className={`flex items-center gap-2 rounded-lg px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wide transition-colors ${
@@ -145,7 +137,7 @@ export default function AppNavigation() {
                                 >
                                     <Icon className="h-4 w-4" />
                                     {label}
-                                </a>
+                                </Link>
                             );
                         })}
                         <hr className="border-border/60" />

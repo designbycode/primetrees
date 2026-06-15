@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition } from './../../../../wayfinder'
 /**
 * @see \App\Http\Controllers\HomePageIndexController::__invoke
- * @see app/Http/Controllers/HomePageIndexController.php:14
+ * @see app/Http/Controllers/HomePageIndexController.php:13
  * @route '/'
  */
 const HomePageIndexController = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ HomePageIndexController.definition = {
 
 /**
 * @see \App\Http\Controllers\HomePageIndexController::__invoke
- * @see app/Http/Controllers/HomePageIndexController.php:14
+ * @see app/Http/Controllers/HomePageIndexController.php:13
  * @route '/'
  */
 HomePageIndexController.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ HomePageIndexController.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\HomePageIndexController::__invoke
- * @see app/Http/Controllers/HomePageIndexController.php:14
+ * @see app/Http/Controllers/HomePageIndexController.php:13
  * @route '/'
  */
 HomePageIndexController.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ HomePageIndexController.get = (options?: RouteQueryOptions): RouteDefinition<'ge
 })
 /**
 * @see \App\Http\Controllers\HomePageIndexController::__invoke
- * @see app/Http/Controllers/HomePageIndexController.php:14
+ * @see app/Http/Controllers/HomePageIndexController.php:13
  * @route '/'
  */
 HomePageIndexController.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({

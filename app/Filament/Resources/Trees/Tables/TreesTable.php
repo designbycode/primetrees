@@ -25,6 +25,8 @@ class TreesTable
                     ->label('Category')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('slug')
+                    ->searchable(),
                 TextColumn::make('species.name')
                     ->label('Species')
                     ->sortable()
@@ -33,8 +35,7 @@ class TreesTable
                     ->searchable(),
                 TextColumn::make('botanical_name')
                     ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
+
                 TextColumn::make('mature_height')
                     ->searchable(),
                 TextColumn::make('mature_width')
@@ -71,7 +72,7 @@ class TreesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+
             ])
             ->recordActions([
                 EditAction::make(),

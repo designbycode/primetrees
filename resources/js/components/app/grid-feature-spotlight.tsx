@@ -1,7 +1,15 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Droplets, Leaf, Ruler, Sun, Globe, Sparkles, TrendingUp } from "lucide-react";
+import {
+    Droplets,
+    Globe,
+    Leaf,
+    Ruler,
+    Sparkles,
+    Sun,
+    TrendingUp,
+} from "lucide-react";
 import { container, fadeUp } from "@/components/app/bento-card";
 import maple from "@/../images/maple.png";
 import leaves from "@/../images/leaves.png";
@@ -104,9 +112,11 @@ export function GridFeatureSpotlight() {
                         <p className="font-sans text-4xl font-black tracking-tighter text-foreground">
                             5–8
                         </p>
-                        <span className="text-xs font-medium text-muted-foreground">USDA Zones</span>
+                        <span className="text-xs font-medium text-muted-foreground">
+                            USDA Zones
+                        </span>
                     </div>
-                    
+
                     {/* Visual Zone Slider */}
                     <div className="mt-3 relative h-1.5 w-full rounded-full bg-muted overflow-hidden">
                         {/* Highlights zones 5-8 */}
@@ -166,7 +176,8 @@ export function GridFeatureSpotlight() {
                     </div>
 
                     <p className="mt-3 text-xs leading-normal text-muted-foreground">
-                        Wide range of leaf silhouettes and striking seasonal palettes.
+                        Wide range of leaf silhouettes and striking seasonal
+                        palettes.
                     </p>
                 </div>
             </motion.div>
@@ -196,7 +207,9 @@ export function GridFeatureSpotlight() {
                                 Canopy Simulator
                             </h4>
                             <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                                Position specimen trees onto a spatial grid to estimate carbon and oxygen offset values in real-time.
+                                Position specimen trees onto a spatial grid to
+                                estimate carbon and oxygen offset values in
+                                real-time.
                             </p>
                         </div>
                         <div className="mt-4 flex items-center gap-2 text-[0.7rem] font-mono text-primary font-bold">
@@ -232,9 +245,36 @@ export function GridFeatureSpotlight() {
                         </div>
                         {/* Connecting faint svg lines */}
                         <svg className="absolute inset-0 size-full pointer-events-none opacity-40">
-                            <line x1="30%" y1="25%" x2="45%" y2="50%" stroke="currentColor" strokeWidth="1" strokeDasharray="3" className="text-primary" />
-                            <line x1="45%" y1="50%" x2="50%" y2="25%" stroke="currentColor" strokeWidth="1" strokeDasharray="3" className="text-primary" />
-                            <line x1="45%" y1="50%" x2="70%" y2="75%" stroke="currentColor" strokeWidth="1" strokeDasharray="3" className="text-primary" />
+                            <line
+                                x1="30%"
+                                y1="25%"
+                                x2="45%"
+                                y2="50%"
+                                stroke="currentColor"
+                                strokeWidth="1"
+                                strokeDasharray="3"
+                                className="text-primary"
+                            />
+                            <line
+                                x1="45%"
+                                y1="50%"
+                                x2="50%"
+                                y2="25%"
+                                stroke="currentColor"
+                                strokeWidth="1"
+                                strokeDasharray="3"
+                                className="text-primary"
+                            />
+                            <line
+                                x1="45%"
+                                y1="50%"
+                                x2="70%"
+                                y2="75%"
+                                stroke="currentColor"
+                                strokeWidth="1"
+                                strokeDasharray="3"
+                                className="text-primary"
+                            />
                         </svg>
                     </div>
                 </div>
@@ -272,15 +312,21 @@ export function GridFeatureSpotlight() {
                     {/* Vertical growth progress representation */}
                     <div className="mt-4 flex items-end gap-3 justify-center h-12">
                         <div className="flex flex-col items-center gap-1 w-full">
-                            <span className="text-[0.6rem] font-mono text-muted-foreground/80">Yr 1</span>
+                            <span className="text-[0.6rem] font-mono text-muted-foreground/80">
+                                Yr 1
+                            </span>
                             <div className="w-full h-3 rounded-t bg-muted group-hover:bg-primary/30 transition-colors duration-300" />
                         </div>
                         <div className="flex flex-col items-center gap-1 w-full">
-                            <span className="text-[0.6rem] font-mono text-muted-foreground/80">Yr 5</span>
+                            <span className="text-[0.6rem] font-mono text-muted-foreground/80">
+                                Yr 5
+                            </span>
                             <div className="w-full h-7 rounded-t bg-muted/80 group-hover:bg-primary/60 transition-colors duration-300" />
                         </div>
                         <div className="flex flex-col items-center gap-1 w-full">
-                            <span className="text-[0.6rem] font-mono text-muted-foreground/80">Yr 10</span>
+                            <span className="text-[0.6rem] font-mono text-muted-foreground/80">
+                                Yr 10
+                            </span>
                             <div className="w-full h-12 rounded-t bg-primary shadow-[0_0_6px_rgba(var(--primary),0.4)]" />
                         </div>
                     </div>
@@ -309,7 +355,9 @@ export function GridFeatureSpotlight() {
                         <p className="font-sans text-4xl font-black tracking-tighter text-foreground">
                             -22.4
                         </p>
-                        <span className="text-sm font-bold text-primary">kg</span>
+                        <span className="text-sm font-bold text-primary">
+                            kg
+                        </span>
                     </div>
                     <p className="text-xs font-semibold text-muted-foreground">
                         Per tree / year
@@ -327,16 +375,22 @@ export function GridFeatureSpotlight() {
                                 className="opacity-80 group-hover:opacity-100 transition-opacity"
                             />
                             {/* Glowing dot at the end */}
-                            <circle cx="100" cy="5" r="3" fill="var(--primary)" className="animate-pulse" />
+                            <circle
+                                cx="100"
+                                cy="5"
+                                r="3"
+                                fill="var(--primary)"
+                                className="animate-pulse"
+                            />
                         </svg>
                     </div>
 
                     <p className="mt-3 text-xs leading-normal text-muted-foreground">
-                        High performance urban cooling and dust capture capability.
+                        High performance urban cooling and dust capture
+                        capability.
                     </p>
                 </div>
             </motion.div>
         </motion.div>
     );
 }
-

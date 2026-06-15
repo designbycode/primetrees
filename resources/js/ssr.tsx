@@ -1,23 +1,27 @@
-import { createInertiaApp } from '@inertiajs/react';
-import createServer from '@inertiajs/react/server';
-import { renderToString } from 'react-dom/server';
-import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import AppLayout from '@/layouts/app-layout';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { Toaster } from '@/components/ui/sonner';
+import { createInertiaApp } from "@inertiajs/react";
+import createServer from "@inertiajs/react/server";
+import { renderToString } from "react-dom/server";
+import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+import AppLayout from "@/layouts/app-layout";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
-const appName = import.meta.env.VITE_APP_NAME || 'PrimeTrees';
+const appName = import.meta.env.VITE_APP_NAME || "PrimeTrees";
 
 createServer((page) =>
     createInertiaApp({
         page,
         render: renderToString,
         title: (title) => (title ? `${title} - ${appName}` : appName),
-        resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
+        resolve: (name) =>
+            resolvePageComponent(
+                `./pages/${name}.tsx`,
+                import.meta.glob("./pages/**/*.tsx"),
+            ),
         setup: ({ App, props }) => <App {...props} />,
         layout: (name) => {
             switch (true) {
-                case name === 'welcome':
+                case name === "welcome":
                     return null;
 
                 default:
@@ -25,7 +29,7 @@ createServer((page) =>
             }
         },
         strictMode: true,
-        withApp(app) {
+        withApp(app: any) {
             return (
                 <TooltipProvider delayDuration={0}>
                     {app}
@@ -33,5 +37,5 @@ createServer((page) =>
                 </TooltipProvider>
             );
         },
-    })
+    }),
 );
