@@ -1,6 +1,7 @@
 import { i as cn, n as Wrapper, r as Button } from "../ssr.js";
 import { t as PageHeader } from "./page-header-BUogbAqS.js";
 import { n as Input, t as SelectCombobox } from "./combobox-DShYAb7e.js";
+import { t as show } from "./trees-Cc6CRQbY.js";
 import { Link } from "@inertiajs/react";
 import { useMemo, useState } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, ArrowUpDown, CheckCircle2, Eye, FileDown, Mail, RotateCcw, Search, SlidersHorizontal, Trees, XCircle } from "lucide-react";
@@ -498,7 +499,8 @@ function AvailabilityList({ stocks = [] }) {
 									children: /* @__PURE__ */ jsxs("div", {
 										className: "flex items-center justify-end gap-2",
 										children: [stock.tree?.slug && /* @__PURE__ */ jsx(Link, {
-											href: `/trees?search=${encodeURIComponent(stock.tree.common_name)}`,
+											prefetch: "hover",
+											href: show(stock.tree.slug),
 											className: "inline-flex size-7 items-center justify-center rounded-md border border-border/60 bg-background text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer",
 											title: "View Details",
 											children: /* @__PURE__ */ jsx(Eye, { className: "size-3.5" })

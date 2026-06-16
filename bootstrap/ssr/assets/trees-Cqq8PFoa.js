@@ -1,59 +1,13 @@
-import { c as queryParams, n as Wrapper, s as applyUrlDefaults, t as AppLayout } from "../ssr.js";
+import { n as Wrapper, t as AppLayout } from "../ssr.js";
 import { t as PageHeader } from "./page-header-BUogbAqS.js";
 import { t as SelectCombobox } from "./combobox-DShYAb7e.js";
+import { t as show } from "./trees-Cc6CRQbY.js";
 import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { Info, Mail, Search, Trees, X } from "lucide-react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "motion/react";
-//#region resources/js/routes/trees/index.ts
-/**
-* @see \App\Http\Controllers\TreesShowController::__invoke
-* @see app/Http/Controllers/TreesShowController.php:14
-* @route '/trees/{tree}'
-*/
-var show = (args, options) => ({
-	url: show.url(args, options),
-	method: "get"
-});
-show.definition = {
-	methods: ["get", "head"],
-	url: "/trees/{tree}"
-};
-/**
-* @see \App\Http\Controllers\TreesShowController::__invoke
-* @see app/Http/Controllers/TreesShowController.php:14
-* @route '/trees/{tree}'
-*/
-show.url = (args, options) => {
-	if (typeof args === "string" || typeof args === "number") args = { tree: args };
-	if (typeof args === "object" && !Array.isArray(args) && "slug" in args) args = { tree: args.slug };
-	if (Array.isArray(args)) args = { tree: args[0] };
-	args = applyUrlDefaults(args);
-	const parsedArgs = { tree: typeof args.tree === "object" ? args.tree.slug : args.tree };
-	return show.definition.url.replace("{tree}", parsedArgs.tree.toString()).replace(/\/+$/, "") + queryParams(options);
-};
-/**
-* @see \App\Http\Controllers\TreesShowController::__invoke
-* @see app/Http/Controllers/TreesShowController.php:14
-* @route '/trees/{tree}'
-*/
-show.get = (args, options) => ({
-	url: show.url(args, options),
-	method: "get"
-});
-/**
-* @see \App\Http\Controllers\TreesShowController::__invoke
-* @see app/Http/Controllers/TreesShowController.php:14
-* @route '/trees/{tree}'
-*/
-show.head = (args, options) => ({
-	url: show.url(args, options),
-	method: "head"
-});
-Object.assign(show, show);
-//#endregion
 //#region resources/js/pages/trees/index.tsx
 function TreesPage({ treeCategories = [] }) {
 	const [selectedCategoryId, setSelectedCategoryId] = useState(null);

@@ -5,9 +5,18 @@ import { useState } from "react";
 import { ArrowLeft, Droplets, Leaf, Mail, Ruler } from "lucide-react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { toast } from "sonner";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Thumbs } from "swiper/modules";
 //#region resources/js/pages/trees/show.tsx
 function TreeShowPage({ tree }) {
 	const [activeImageIndex, setActiveImageIndex] = useState(0);
+	const [thumbsSwiper, setThumbsSwiper] = useState(null);
+	const images = tree.image_urls && tree.image_urls.length > 0 ? tree.image_urls : [{
+		original: "/images/tree-placeholder.png",
+		large: "/images/tree-placeholder.png",
+		thumb: "/images/tree-placeholder.png",
+		card: "/images/tree-placeholder.png"
+	}];
 	const availableSizes = tree.stock?.filter((s) => s.is_available) || [];
 	const [enquirySize, setEnquirySize] = useState(availableSizes.length > 0 ? availableSizes[0].container_size : tree.stock?.length > 0 ? tree.stock[0].container_size : "100L");
 	const [enquiryQuantity, setEnquiryQuantity] = useState(1);
@@ -48,41 +57,62 @@ function TreeShowPage({ tree }) {
 				children: [
 					/* @__PURE__ */ jsxs("div", {
 						className: "relative aspect-video w-full overflow-hidden rounded-3xl border border-border bg-card shadow-sm",
-						children: [/* @__PURE__ */ jsx("img", {
-							src: tree.image_urls?.[activeImageIndex]?.large || tree.image_urls?.[activeImageIndex]?.original || "/images/tree-placeholder.png",
-							alt: tree.common_name,
-							className: "h-full w-full object-cover transition-all duration-300",
-							onError: (e) => {
-								e.currentTarget.src = "/images/tree-placeholder.png";
-							}
+						children: [/* @__PURE__ */ jsx(Swiper, {
+							modules: [Thumbs],
+							thumbs: { swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null },
+							onSlideChange: (swiper) => setActiveImageIndex(swiper.activeIndex),
+							className: "w-full h-full",
+							spaceBetween: 0,
+							slidesPerView: 1,
+							grabCursor: true,
+							children: images.map((img, idx) => /* @__PURE__ */ jsx(SwiperSlide, { children: /* @__PURE__ */ jsx("img", {
+								src: img.large || img.original || "/images/tree-placeholder.png",
+								alt: tree.common_name,
+								className: "h-full w-full object-cover select-none",
+								onError: (e) => {
+									e.currentTarget.src = "/images/tree-placeholder.png";
+								}
+							}) }, idx))
 						}), /* @__PURE__ */ jsxs("div", {
-							className: "absolute top-4 left-4 flex flex-wrap gap-1.5",
+							className: "absolute top-4 left-4 z-10 flex flex-wrap gap-1.5 pointer-events-none",
 							children: [tree.is_indigenous && /* @__PURE__ */ jsx("span", {
-								className: "rounded-md bg-emerald-700/95 text-white px-2.5 py-1 text-xs font-bold uppercase tracking-wider font-mono",
+								className: "rounded-md bg-primary/95 text-primary-foreground px-2.5 py-1 text-xs font-bold uppercase tracking-wider font-mono",
 								children: "Indigenous"
 							}), tree.is_evergreen ? /* @__PURE__ */ jsx("span", {
 								className: "rounded-md bg-primary/95 text-primary-foreground px-2.5 py-1 text-xs font-bold uppercase tracking-wider font-mono",
 								children: "Evergreen"
 							}) : /* @__PURE__ */ jsx("span", {
-								className: "rounded-md bg-amber-600/95 text-white px-2.5 py-1 text-xs font-bold uppercase tracking-wider font-mono",
+								className: "rounded-md bg-accent/95 text-accent-foreground px-2.5 py-1 text-xs font-bold uppercase tracking-wider font-mono",
 								children: "Deciduous"
 							})]
 						})]
 					}),
-					tree.image_urls && tree.image_urls.length > 1 && /* @__PURE__ */ jsx("div", {
-						className: "flex flex-wrap gap-3",
-						children: tree.image_urls.map((img, idx) => /* @__PURE__ */ jsx("button", {
-							onClick: () => setActiveImageIndex(idx),
-							className: `relative w-20 aspect-video rounded-xl overflow-hidden border bg-card cursor-pointer transition-all duration-200 ${activeImageIndex === idx ? "border-primary ring-2 ring-primary/20 scale-102" : "border-border/80 hover:border-foreground/40"}`,
-							children: /* @__PURE__ */ jsx("img", {
-								src: img.thumb,
-								alt: `${tree.common_name} thumbnail ${idx + 1}`,
-								className: "w-full h-full object-cover",
-								onError: (e) => {
-									e.currentTarget.src = "/images/tree-placeholder.png";
-								}
-							})
-						}, idx))
+					images.length > 1 && /* @__PURE__ */ jsx("div", {
+						className: "w-full",
+						children: /* @__PURE__ */ jsx(Swiper, {
+							onSwiper: setThumbsSwiper,
+							modules: [FreeMode, Thumbs],
+							watchSlidesProgress: true,
+							freeMode: true,
+							spaceBetween: 12,
+							slidesPerView: Math.min(4, images.length),
+							grabCursor: true,
+							className: "w-full",
+							children: images.map((img, idx) => /* @__PURE__ */ jsx(SwiperSlide, {
+								className: "cursor-pointer",
+								children: /* @__PURE__ */ jsx("div", {
+									className: `relative aspect-video rounded-xl overflow-hidden border bg-card transition-all duration-200 ${activeImageIndex === idx ? "border-primary ring-2 ring-primary/20 scale-102" : "border-border/80 hover:border-foreground/40"}`,
+									children: /* @__PURE__ */ jsx("img", {
+										src: img.thumb,
+										alt: `${tree.common_name} thumbnail ${idx + 1}`,
+										className: "w-full h-full object-cover select-none",
+										onError: (e) => {
+											e.currentTarget.src = "/images/tree-placeholder.png";
+										}
+									})
+								})
+							}, idx))
+						})
 					}),
 					/* @__PURE__ */ jsxs("div", {
 						className: "grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4",
@@ -108,7 +138,7 @@ function TreeShowPage({ tree }) {
 								})]
 							}),
 							/* @__PURE__ */ jsxs("div", {
-								className: "bg-card border border-border rounded-2xl p-4 flex flex-col justify-between min-h-[90px]",
+								className: "bg-card border border-border rounded-2xl p-4 flex flex-col justify-between min-h-22.5",
 								children: [/* @__PURE__ */ jsx("span", {
 									className: "text-[0.625rem] font-mono font-bold text-muted-foreground/60 uppercase tracking-wider",
 									children: "Mature Height"
@@ -122,7 +152,7 @@ function TreeShowPage({ tree }) {
 								})]
 							}),
 							/* @__PURE__ */ jsxs("div", {
-								className: "bg-card border border-border rounded-2xl p-4 flex flex-col justify-between min-h-[90px]",
+								className: "bg-card border border-border rounded-2xl p-4 flex flex-col justify-between min-h-22.5",
 								children: [/* @__PURE__ */ jsx("span", {
 									className: "text-[0.625rem] font-mono font-bold text-muted-foreground/60 uppercase tracking-wider",
 									children: "Foliage Type"
@@ -260,7 +290,7 @@ function TreeShowPage({ tree }) {
 								className: `flex items-center justify-between p-3 rounded-2xl border text-xs ${st.is_available ? "bg-muted/40 border-border/80" : "bg-muted/10 border-border/20 opacity-60"}`,
 								children: [/* @__PURE__ */ jsxs("div", {
 									className: "flex items-center gap-2",
-									children: [/* @__PURE__ */ jsx("div", { className: `w-2 h-2 rounded-full ${st.is_available ? "bg-emerald-500" : "bg-muted-foreground/30"}` }), /* @__PURE__ */ jsx("span", {
+									children: [/* @__PURE__ */ jsx("div", { className: `w-2 h-2 rounded-full ${st.is_available ? "bg-primary" : "bg-muted-foreground/30"}` }), /* @__PURE__ */ jsx("span", {
 										className: "font-bold text-foreground font-mono",
 										children: st.container_size
 									})]

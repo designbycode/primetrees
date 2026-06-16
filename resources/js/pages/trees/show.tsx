@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { SelectCombobox } from "@/components/ui/combobox";
-import {
-    ArrowLeft,
-    Droplets,
-    Leaf,
-    Mail,
-    Ruler,
-} from "lucide-react";
+import { ArrowLeft, Droplets, Leaf, Mail, Ruler } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import { trees } from "@/routes";
 import AppLayout from "@/layouts/app-layout";
 import Wrapper from "@/components/app/wrapper.tsx";
 import { toast } from "sonner";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Thumbs } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
+
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/thumbs";
 
 interface TreeStock {
     id: number;
@@ -69,12 +70,28 @@ interface TreeShowProps {
 
 export default function TreeShowPage({ tree }: TreeShowProps) {
     const [activeImageIndex, setActiveImageIndex] = useState(0);
+    const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+
+    const images =
+        tree.image_urls && tree.image_urls.length > 0
+            ? tree.image_urls
+            : [
+                  {
+                      original: "/images/tree-placeholder.png",
+                      large: "/images/tree-placeholder.png",
+                      thumb: "/images/tree-placeholder.png",
+                      card: "/images/tree-placeholder.png",
+                  },
+              ];
 
     // Form states
     const availableSizes = tree.stock?.filter((s) => s.is_available) || [];
-    const initialSize = availableSizes.length > 0
-        ? availableSizes[0].container_size
-        : (tree.stock?.length > 0 ? tree.stock[0].container_size : "100L");
+    const initialSize =
+        availableSizes.length > 0
+            ? availableSizes[0].container_size
+            : tree.stock?.length > 0
+              ? tree.stock[0].container_size
+              : "100L";
 
     const [enquirySize, setEnquirySize] = useState(initialSize);
     const [enquiryQuantity, setEnquiryQuantity] = useState(1);
@@ -124,23 +141,45 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                 <div className="lg:col-span-7 space-y-4">
                     {/* Main Image View */}
                     <div className="relative aspect-video w-full overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
-                        <img
-                            src={
-                                tree.image_urls?.[activeImageIndex]?.large ||
-                                tree.image_urls?.[activeImageIndex]?.original ||
-                                "/images/tree-placeholder.png"
-                            }
-                            alt={tree.common_name}
-                            className="h-full w-full object-cover transition-all duration-300"
-                            onError={(e) => {
-                                e.currentTarget.src = "/images/tree-placeholder.png";
+                        <Swiper
+                            modules={[Thumbs]}
+                            thumbs={{
+                                swiper:
+                                    thumbsSwiper && !thumbsSwiper.destroyed
+                                        ? thumbsSwiper
+                                        : null,
                             }}
-                        />
+                            onSlideChange={(swiper) =>
+                                setActiveImageIndex(swiper.activeIndex)
+                            }
+                            className="w-full h-full"
+                            spaceBetween={0}
+                            slidesPerView={1}
+                            grabCursor={true}
+                        >
+                            {images.map((img, idx) => (
+                                <SwiperSlide key={idx}>
+                                    <img
+                                        src={
+                                            img.large ||
+                                            img.original ||
+                                            "/images/tree-placeholder.png"
+                                        }
+                                        alt={tree.common_name}
+                                        className="h-full w-full object-cover select-none"
+                                        onError={(e) => {
+                                            e.currentTarget.src =
+                                                "/images/tree-placeholder.png";
+                                        }}
+                                    />
+                                </SwiperSlide>
+                            ))}
+                        </Swiper>
 
                         {/* Top absolute indicator badges */}
-                        <div className="absolute top-4 left-4 flex flex-wrap gap-1.5">
+                        <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-1.5 pointer-events-none">
                             {tree.is_indigenous && (
-                                <span className="rounded-md bg-emerald-700/95 text-white px-2.5 py-1 text-xs font-bold uppercase tracking-wider font-mono">
+                                <span className="rounded-md bg-primary/95 text-primary-foreground px-2.5 py-1 text-xs font-bold uppercase tracking-wider font-mono">
                                     Indigenous
                                 </span>
                             )}
@@ -149,7 +188,7 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                     Evergreen
                                 </span>
                             ) : (
-                                <span className="rounded-md bg-amber-600/95 text-white px-2.5 py-1 text-xs font-bold uppercase tracking-wider font-mono">
+                                <span className="rounded-md bg-accent/95 text-accent-foreground px-2.5 py-1 text-xs font-bold uppercase tracking-wider font-mono">
                                     Deciduous
                                 </span>
                             )}
@@ -157,28 +196,43 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                     </div>
 
                     {/* Gallery Thumbnails List */}
-                    {tree.image_urls && tree.image_urls.length > 1 && (
-                        <div className="flex flex-wrap gap-3">
-                            {tree.image_urls.map((img, idx) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => setActiveImageIndex(idx)}
-                                    className={`relative w-20 aspect-video rounded-xl overflow-hidden border bg-card cursor-pointer transition-all duration-200 ${
-                                        activeImageIndex === idx
-                                            ? "border-primary ring-2 ring-primary/20 scale-102"
-                                            : "border-border/80 hover:border-foreground/40"
-                                    }`}
-                                >
-                                    <img
-                                        src={img.thumb}
-                                        alt={`${tree.common_name} thumbnail ${idx + 1}`}
-                                        className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                            e.currentTarget.src = "/images/tree-placeholder.png";
-                                        }}
-                                    />
-                                </button>
-                            ))}
+                    {images.length > 1 && (
+                        <div className="w-full">
+                            <Swiper
+                                onSwiper={setThumbsSwiper}
+                                modules={[FreeMode, Thumbs]}
+                                watchSlidesProgress={true}
+                                freeMode={true}
+                                spaceBetween={12}
+                                slidesPerView={Math.min(4, images.length)}
+                                grabCursor={true}
+                                className="w-full"
+                            >
+                                {images.map((img, idx) => (
+                                    <SwiperSlide
+                                        key={idx}
+                                        className="cursor-pointer"
+                                    >
+                                        <div
+                                            className={`relative aspect-video rounded-xl overflow-hidden border bg-card transition-all duration-200 ${
+                                                activeImageIndex === idx
+                                                    ? "border-primary ring-2 ring-primary/20 scale-102"
+                                                    : "border-border/80 hover:border-foreground/40"
+                                            }`}
+                                        >
+                                            <img
+                                                src={img.thumb}
+                                                alt={`${tree.common_name} thumbnail ${idx + 1}`}
+                                                className="w-full h-full object-cover select-none"
+                                                onError={(e) => {
+                                                    e.currentTarget.src =
+                                                        "/images/tree-placeholder.png";
+                                                }}
+                                            />
+                                        </div>
+                                    </SwiperSlide>
+                                ))}
+                            </Swiper>
                         </div>
                     )}
 
@@ -201,17 +255,21 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                 {tree.water_requirement || "Medium"}
                             </span>
                         </div>
-                        <div className="bg-card border border-border rounded-2xl p-4 flex flex-col justify-between min-h-[90px]">
+                        <div className="bg-card border border-border rounded-2xl p-4 flex flex-col justify-between min-h-22.5">
                             <span className="text-[0.625rem] font-mono font-bold text-muted-foreground/60 uppercase tracking-wider">
                                 Mature Height
                             </span>
                             <span className="text-sm font-geist font-black text-foreground capitalize mt-1.5 flex items-center gap-1">
                                 <Ruler className="size-4 text-primary shrink-0" />
-                                {tree.mature_height ? `${tree.mature_height}m` : "N/A"}
-                                {tree.mature_width ? ` x ${tree.mature_width}m` : ""}
+                                {tree.mature_height
+                                    ? `${tree.mature_height}m`
+                                    : "N/A"}
+                                {tree.mature_width
+                                    ? ` x ${tree.mature_width}m`
+                                    : ""}
                             </span>
                         </div>
-                        <div className="bg-card border border-border rounded-2xl p-4 flex flex-col justify-between min-h-[90px]">
+                        <div className="bg-card border border-border rounded-2xl p-4 flex flex-col justify-between min-h-22.5">
                             <span className="text-[0.625rem] font-mono font-bold text-muted-foreground/60 uppercase tracking-wider">
                                 Foliage Type
                             </span>
@@ -243,32 +301,45 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-1.5 text-xs font-sans">
                             <div className="flex justify-between py-2 border-b border-border/40">
-                                <span className="text-muted-foreground">Origin Status</span>
+                                <span className="text-muted-foreground">
+                                    Origin Status
+                                </span>
                                 <span className="font-semibold text-foreground">
-                                    {tree.is_indigenous ? "Indigenous to South Africa" : "Exotic / Cultivated"}
+                                    {tree.is_indigenous
+                                        ? "Indigenous to South Africa"
+                                        : "Exotic / Cultivated"}
                                 </span>
                             </div>
                             <div className="flex justify-between py-2 border-b border-border/40">
-                                <span className="text-muted-foreground">Drought Tolerance</span>
+                                <span className="text-muted-foreground">
+                                    Drought Tolerance
+                                </span>
                                 <span className="font-semibold text-foreground capitalize">
                                     {tree.drought_tolerance || "Moderate"}
                                 </span>
                             </div>
                             <div className="flex justify-between py-2 border-b border-border/40">
-                                <span className="text-muted-foreground">Frost Tolerance</span>
+                                <span className="text-muted-foreground">
+                                    Frost Tolerance
+                                </span>
                                 <span className="font-semibold text-foreground capitalize">
                                     {tree.frost_tolerance || "High"}
                                 </span>
                             </div>
                             <div className="flex justify-between py-2 border-b border-border/40">
-                                <span className="text-muted-foreground">Flowering Season</span>
+                                <span className="text-muted-foreground">
+                                    Flowering Season
+                                </span>
                                 <span className="font-semibold text-foreground capitalize">
-                                    {tree.flowering_season || "Non-flowering / Foliage"}
+                                    {tree.flowering_season ||
+                                        "Non-flowering / Foliage"}
                                 </span>
                             </div>
                             {tree.flower_colour && (
                                 <div className="flex justify-between py-2 border-b border-border/40">
-                                    <span className="text-muted-foreground">Flower Colour</span>
+                                    <span className="text-muted-foreground">
+                                        Flower Colour
+                                    </span>
                                     <span className="font-semibold text-foreground capitalize">
                                         {tree.flower_colour}
                                     </span>
@@ -276,7 +347,9 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                             )}
                             {tree.category && (
                                 <div className="flex justify-between py-2 border-b border-border/40">
-                                    <span className="text-muted-foreground">Category</span>
+                                    <span className="text-muted-foreground">
+                                        Category
+                                    </span>
                                     <span className="font-semibold text-foreground">
                                         {tree.category.name}
                                     </span>
@@ -284,7 +357,9 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                             )}
                             {tree.species && (
                                 <div className="flex justify-between py-2 border-b border-border/40">
-                                    <span className="text-muted-foreground">Species family</span>
+                                    <span className="text-muted-foreground">
+                                        Species family
+                                    </span>
                                     <span className="font-semibold text-foreground">
                                         {tree.species.name}
                                     </span>
@@ -336,7 +411,9 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                         <div className="flex items-center gap-2">
                                             <div
                                                 className={`w-2 h-2 rounded-full ${
-                                                    st.is_available ? "bg-emerald-500" : "bg-muted-foreground/30"
+                                                    st.is_available
+                                                        ? "bg-primary"
+                                                        : "bg-muted-foreground/30"
                                                 }`}
                                             />
                                             <span className="font-bold text-foreground font-mono">
@@ -359,8 +436,9 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                             </div>
                         ) : (
                             <p className="text-xs text-muted-foreground leading-relaxed">
-                                Custom sizes from 100L up to 2000L are available on contract grow orders. Contact
-                                sales directly for specific requirements.
+                                Custom sizes from 100L up to 2000L are available
+                                on contract grow orders. Contact sales directly
+                                for specific requirements.
                             </p>
                         )}
                     </div>
@@ -372,11 +450,15 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                 Wholesale Price Enquiry
                             </h3>
                             <p className="text-xs text-muted-foreground mt-1 font-sans">
-                                Select sizes and request pricing for commercial landscapes.
+                                Select sizes and request pricing for commercial
+                                landscapes.
                             </p>
                         </div>
 
-                        <form onSubmit={handleEnquirySubmit} className="space-y-4">
+                        <form
+                            onSubmit={handleEnquirySubmit}
+                            className="space-y-4"
+                        >
                             <div>
                                 <label
                                     htmlFor="enquiryName"
@@ -389,7 +471,9 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                     type="text"
                                     required
                                     value={enquiryName}
-                                    onChange={(e) => setEnquiryName(e.target.value)}
+                                    onChange={(e) =>
+                                        setEnquiryName(e.target.value)
+                                    }
                                     className="w-full bg-muted/40 border border-border rounded-xl px-3 py-2.5 text-xs text-foreground focus:outline-hidden focus:border-primary/50"
                                     placeholder="e.g. Sarah Jenkins"
                                 />
@@ -407,7 +491,9 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                     type="email"
                                     required
                                     value={enquiryEmail}
-                                    onChange={(e) => setEnquiryEmail(e.target.value)}
+                                    onChange={(e) =>
+                                        setEnquiryEmail(e.target.value)
+                                    }
                                     className="w-full bg-muted/40 border border-border rounded-xl px-3 py-2.5 text-xs text-foreground focus:outline-hidden focus:border-primary/50"
                                     placeholder="e.g. sarah@developer.co.za"
                                 />
@@ -421,26 +507,38 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                     >
                                         Container Size
                                     </label>
-                                        <SelectCombobox
-                                            id="enquirySize"
-                                            value={enquirySize}
-                                            onValueChange={setEnquirySize}
-                                            options={
-                                                tree?.stock?.length
-                                                    ? tree.stock.map((st) => ({
-                                                        value: st.container_size,
-                                                        label: `${st.container_size} ${st.is_available ? "" : "(Backorder)"}`.trim()
-                                                      }))
-                                                    : [
-                                                        { value: "100L", label: "100L Specimen" },
-                                                        { value: "200L", label: "200L Specimen" },
-                                                        { value: "500L", label: "500L Specimen" },
-                                                        { value: "2000L", label: "2000L Mature" }
-                                                      ]
-                                            }
-                                            placeholder="Select Size"
-                                            className="w-full text-xs h-8"
-                                        />
+                                    <SelectCombobox
+                                        id="enquirySize"
+                                        value={enquirySize}
+                                        onValueChange={setEnquirySize}
+                                        options={
+                                            tree?.stock?.length
+                                                ? tree.stock.map((st) => ({
+                                                      value: st.container_size,
+                                                      label: `${st.container_size} ${st.is_available ? "" : "(Backorder)"}`.trim(),
+                                                  }))
+                                                : [
+                                                      {
+                                                          value: "100L",
+                                                          label: "100L Specimen",
+                                                      },
+                                                      {
+                                                          value: "200L",
+                                                          label: "200L Specimen",
+                                                      },
+                                                      {
+                                                          value: "500L",
+                                                          label: "500L Specimen",
+                                                      },
+                                                      {
+                                                          value: "2000L",
+                                                          label: "2000L Mature",
+                                                      },
+                                                  ]
+                                        }
+                                        placeholder="Select Size"
+                                        className="w-full text-xs h-8"
+                                    />
                                 </div>
 
                                 <div>
@@ -456,7 +554,9 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                         min={1}
                                         value={enquiryQuantity}
                                         onChange={(e) =>
-                                            setEnquiryQuantity(parseInt(e.target.value) || 1)
+                                            setEnquiryQuantity(
+                                                parseInt(e.target.value) || 1,
+                                            )
                                         }
                                         className="w-full bg-muted/40 border border-border rounded-xl px-3 py-2 text-xs text-foreground focus:outline-hidden focus:border-primary/50"
                                     />
@@ -474,7 +574,9 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                     id="enquiryCompany"
                                     type="text"
                                     value={enquiryCompany}
-                                    onChange={(e) => setEnquiryCompany(e.target.value)}
+                                    onChange={(e) =>
+                                        setEnquiryCompany(e.target.value)
+                                    }
                                     className="w-full bg-muted/40 border border-border rounded-xl px-3 py-2.5 text-xs text-foreground focus:outline-hidden focus:border-primary/50"
                                     placeholder="e.g. GreenScape Contractors (Optional)"
                                 />
@@ -491,7 +593,9 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                     id="enquiryMessage"
                                     rows={4}
                                     value={enquiryMessage}
-                                    onChange={(e) => setEnquiryMessage(e.target.value)}
+                                    onChange={(e) =>
+                                        setEnquiryMessage(e.target.value)
+                                    }
                                     className="w-full bg-muted/40 border border-border rounded-xl px-3 py-2.5 text-xs text-foreground focus:outline-hidden focus:border-primary/50 resize-none"
                                 />
                             </div>
@@ -502,7 +606,9 @@ export default function TreeShowPage({ tree }: TreeShowProps) {
                                 className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-transparent bg-primary text-primary-foreground hover:bg-primary/90 py-3 text-xs font-mono font-bold uppercase tracking-wider transition-all disabled:opacity-50 mt-2 cursor-pointer shadow-sm"
                             >
                                 <Mail className="size-4" />
-                                {isSubmitting ? "Sending..." : "Submit Quote Request"}
+                                {isSubmitting
+                                    ? "Sending..."
+                                    : "Submit Quote Request"}
                             </button>
                         </form>
                     </div>

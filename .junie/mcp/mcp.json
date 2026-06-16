@@ -6,6 +6,9 @@
                 "C:\\www\\clients\\primetrees\\artisan",
                 "boost:mcp"
             ]
+        },
+        "swiper": {
+            "url": "https://swiperjs.com/mcp"
         }
     }
 }

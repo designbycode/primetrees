@@ -7,6 +7,18 @@
     "/build/assets/layers-2x-Bpkbi35X.png",
     "/build/assets/marker-icon-hN30_KVU.png"
   ],
+  "node_modules/swiper/modules/free-mode.css": [
+    "/build/assets/show-_Fiz163O.js",
+    "/build/assets/show-B92ORD6a.css"
+  ],
+  "node_modules/swiper/modules/thumbs.css": [
+    "/build/assets/show-_Fiz163O.js",
+    "/build/assets/show-B92ORD6a.css"
+  ],
+  "node_modules/swiper/swiper.css": [
+    "/build/assets/show-_Fiz163O.js",
+    "/build/assets/show-B92ORD6a.css"
+  ],
   "resources/images/field.png": [
     "/build/assets/home-DUG5YOrN.js",
     "/build/assets/maple-BxqZ8PyM.png",
@@ -101,7 +113,7 @@
   "resources/js/components/app/wrapper.tsx": [],
   "resources/js/components/theme-toggle.tsx": [],
   "resources/js/components/ui/badge.tsx": [
-    "/build/assets/availability-list-DyYLHSNi.js"
+    "/build/assets/availability-list-Q_8s6YPB.js"
   ],
   "resources/js/components/ui/button.tsx": [],
   "resources/js/components/ui/combobox.tsx": [
@@ -115,7 +127,7 @@
   ],
   "resources/js/components/ui/sonner.tsx": [],
   "resources/js/components/ui/table.tsx": [
-    "/build/assets/availability-list-DyYLHSNi.js"
+    "/build/assets/availability-list-Q_8s6YPB.js"
   ],
   "resources/js/components/ui/textarea.tsx": [
     "/build/assets/combobox-DShYAb7e.js"
@@ -129,7 +141,10 @@
   "resources/js/layouts/app/app-notification-bar.tsx": [],
   "resources/js/lib/utils.ts": [],
   "resources/js/pages/availability-list.tsx": [
-    "/build/assets/availability-list-DyYLHSNi.js"
+    "/build/assets/availability-list-Q_8s6YPB.js"
+  ],
+  "resources/js/pages/error.tsx": [
+    "/build/assets/error-B7UHhSi5.js"
   ],
   "resources/js/pages/home.tsx": [
     "/build/assets/home-DUG5YOrN.js",
@@ -141,17 +156,18 @@
     "/build/assets/prime-trees-wholesale-tree-nursery-CUhFS5Vc.jpg"
   ],
   "resources/js/pages/trees/index.tsx": [
-    "/build/assets/trees-CyQeEBLg.js"
+    "/build/assets/trees-Cqq8PFoa.js"
   ],
   "resources/js/pages/trees/show.tsx": [
-    "/build/assets/show-DCdeptD0.js"
+    "/build/assets/show-_Fiz163O.js",
+    "/build/assets/show-B92ORD6a.css"
   ],
   "resources/js/pages/visit.tsx": [
     "/build/assets/visit-DLgUhJ0-.js"
   ],
   "resources/js/routes/index.ts": [],
   "resources/js/routes/trees/index.ts": [
-    "/build/assets/trees-CyQeEBLg.js"
+    "/build/assets/trees-Cc6CRQbY.js"
   ],
   "resources/js/ssr.tsx": [],
   "resources/js/wayfinder/index.ts": []

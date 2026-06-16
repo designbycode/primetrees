@@ -558,37 +558,46 @@ AppNotificationBar.displayName = "AppNotificationBar";
 var MapSection = React.lazy(() => import("./assets/map-section-CR4sUvx9.js"));
 function AppLayout({ children, title }) {
 	const [isMounted, setIsMounted] = useState(false);
+	const { component } = usePage();
 	useEffect(() => {
 		setIsMounted(true);
 	}, []);
-	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Head, { title: title ? `${title} - PrimeTrees` : "PrimeTrees - Premium Forestry & Tree Care" }), /* @__PURE__ */ jsxs("div", {
-		className: "min-h-screen bg-background text-foreground font-sans selection:bg-primary/50 selection:text-white flex flex-col",
-		children: [
-			/* @__PURE__ */ jsx(AppNotificationBar, {}),
-			/* @__PURE__ */ jsx(AppNavigation, {}),
-			/* @__PURE__ */ jsx("main", {
-				className: "flex-1 w-full",
-				children
-			}),
-			isMounted && /* @__PURE__ */ jsx("div", {
-				className: "print:hidden",
-				children: /* @__PURE__ */ jsx(Suspense, {
-					fallback: /* @__PURE__ */ jsx("div", {
-						className: "w-full bg-muted/10 py-16 px-6 border-t border-border animate-pulse",
-						children: /* @__PURE__ */ jsxs("div", {
-							className: "mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8",
-							children: [/* @__PURE__ */ jsx("div", { className: "lg:col-span-5 h-[400px] bg-muted rounded-2xl" }), /* @__PURE__ */ jsx("div", { className: "lg:col-span-7 h-[400px] bg-muted rounded-2xl" })]
-						})
-					}),
-					children: /* @__PURE__ */ jsx(MapSection, {})
+	const isErrorPage = component === "error";
+	return /* @__PURE__ */ jsxs(Fragment, { children: [
+		/* @__PURE__ */ jsx(Head, { title: title ? `${title} - PrimeTrees` : "PrimeTrees - Premium Forestry & Tree Care" }),
+		/* @__PURE__ */ jsxs("div", {
+			className: "fixed    inset-0 pointer-events-none overflow-hidden",
+			children: [/* @__PURE__ */ jsx("div", { className: "absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-[120px]" }), /* @__PURE__ */ jsx("div", { className: "absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-primary/5 blur-[150px]" })]
+		}),
+		/* @__PURE__ */ jsxs("div", {
+			className: "min-h-screen bg-background text-foreground font-sans selection:bg-primary/50 selection:text-white flex flex-col",
+			children: [
+				/* @__PURE__ */ jsx(AppNotificationBar, {}),
+				/* @__PURE__ */ jsx(AppNavigation, {}),
+				/* @__PURE__ */ jsx("main", {
+					className: "flex-1 w-full",
+					children
+				}),
+				isMounted && !isErrorPage && /* @__PURE__ */ jsx("div", {
+					className: "print:hidden",
+					children: /* @__PURE__ */ jsx(Suspense, {
+						fallback: /* @__PURE__ */ jsx("div", {
+							className: "w-full bg-muted/10 py-16 px-6 border-t border-border animate-pulse",
+							children: /* @__PURE__ */ jsxs("div", {
+								className: "mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-8",
+								children: [/* @__PURE__ */ jsx("div", { className: "lg:col-span-5 h-100 bg-muted rounded-2xl" }), /* @__PURE__ */ jsx("div", { className: "lg:col-span-7 h-100 bg-muted rounded-2xl" })]
+							})
+						}),
+						children: /* @__PURE__ */ jsx(MapSection, {})
+					})
+				}),
+				/* @__PURE__ */ jsx("div", {
+					className: "print:hidden",
+					children: /* @__PURE__ */ jsx(AppFooter, {})
 				})
-			}),
-			/* @__PURE__ */ jsx("div", {
-				className: "print:hidden",
-				children: /* @__PURE__ */ jsx(AppFooter, {})
-			})
-		]
-	})] });
+			]
+		})
+	] });
 }
 //#endregion
 //#region resources/js/components/ui/tooltip.tsx
@@ -631,10 +640,11 @@ createServer((page) => createInertiaApp({
 	render: renderToString,
 	title: (title) => title ? `${title} - ${appName}` : appName,
 	resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, /* #__PURE__ */ Object.assign({
-		"./pages/availability-list.tsx": () => import("./assets/availability-list-DyYLHSNi.js"),
+		"./pages/availability-list.tsx": () => import("./assets/availability-list-Q_8s6YPB.js"),
+		"./pages/error.tsx": () => import("./assets/error-B7UHhSi5.js"),
 		"./pages/home.tsx": () => import("./assets/home-DUG5YOrN.js"),
-		"./pages/trees/index.tsx": () => import("./assets/trees-CyQeEBLg.js"),
-		"./pages/trees/show.tsx": () => import("./assets/show-DCdeptD0.js"),
+		"./pages/trees/index.tsx": () => import("./assets/trees-Cqq8PFoa.js"),
+		"./pages/trees/show.tsx": () => import("./assets/show-_Fiz163O.js"),
 		"./pages/visit.tsx": () => import("./assets/visit-DLgUhJ0-.js")
 	})),
 	setup: ({ App, props }) => /* @__PURE__ */ jsx(App, { ...props }),
